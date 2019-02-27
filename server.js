@@ -6,6 +6,9 @@ const helmet = require('helmet');
 
 const server = express();
 const port = process.env.PORT || 4000;
+const mainRouter = require('./routers');
+
+server.use('/api', mainRouter);
 
 server.use('/', (req, res) => res.send('It\'s working !!\nIt\'s Working !!'));
 
