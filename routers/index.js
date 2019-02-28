@@ -7,6 +7,7 @@ const router = express.Router();
 const userRoutes = require('./userRouter');
 const internalError = 'Houston, we have a problem';
 const db = require('../db/helpers/userModel');
+const jwt = require('./helpers/jwtModel');
 
 router.use(express.json());
 
@@ -67,13 +68,36 @@ router.post('/register', async (req, res) => {
 
 });
 
-router.post('/login', (req, res) => {
-    res
-        .status(201)
-        .json({
-            url: '/api/login',
-            operation: 'POST'
-        });
+router.post('/login', async (req, res) => {
+    let {
+        username,
+        password
+    } = req.body;
+
+    try {
+        let user = await db.findBy({username}).first();
+
+        if (user && bcrypt.compareSync(password, user.password)) {
+            const token = jwt.generateToken(user);
+
+            res
+                .status(200)
+                .json({
+                    message: `Welcome ${user.username}!, have a token...`,
+                    token
+                });
+        } else {
+            res
+                .status(401)
+                .json({
+                    message: 'Invalid Credentials'
+                });
+        }
+    } catch (err) {
+        res
+            .status(500)
+            .json(internalError);
+    }
 });
 
 router.use('/users', userRoutes);

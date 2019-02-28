@@ -2,7 +2,7 @@ const db = require('../dbConfig');
 const dbName = 'users'
 
 const findBy = filter => {
-    return db('users').select('id', 'username', 'department', 'createdAt').where(filter);
+    return db('users').where(filter);
 }
 
 const create = async user => {
