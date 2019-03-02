@@ -21,6 +21,10 @@ exports.up = function(knex, Promise) {
             .notNullable();
 
         tbl
+            .string('department')
+            .notNullable();
+
+        tbl
             .timestamp('created_at')
             .defaultTo(knex.fn.now());
     })
